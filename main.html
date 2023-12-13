@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            width: 600px;
+            height: 600px;
+            gap: 1px;
+            background-color: #ccc; /* Light gray background */
+        }
+
+        .grid-cell {
+            background-color: #dfe4cd; /* Green cells */
+            border: 1px solid #000406;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .drag-button {
+         
+            background-color: rgb(176, 198, 227); /* Red button */
+            color: #fff; /* White text color */
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+         
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container" id="grid-container">
+        <!-- Create a button element for dragging and resizing -->
+        <div class="drag-button" id="drag-button">1</div>
+
+        <!-- Create ten rows and ten columns with numbers from 1 to 100 -->
+        <script>
+            let number = 1; // Start with number 1
+            for (let row = 1; row <= 10; row++) {
+                for (let col = 1; col <= 10; col++) {
+                    const cell = document.createElement("div");
+                    cell.classList.add("grid-cell");
+                    cell.textContent = number;
+                    document.getElementById("grid-container").appendChild(cell);
+                    number++;
+                }
+            }
+        </script>
+    </div>
+
+    <script>
+        const gridContainer = document.querySelector(".grid-container");
+        const dragButton = document.getElementById("drag-button");
+        let isDragging = false;
+        let isResizing = false; // Added a resizing flag
+
+        dragButton.addEventListener("mousedown", (e) => {
+            if (e.target === dragButton) {
+                isResizing = true; // Check if the mouse is on the button for resizing
+                dragButton.style.zIndex = "3"; /* Increase the z-index when resizing */
+
+                // Calculate the spanned columns and rows
+                const width = parseInt(dragButton.style.gridColumn);
+                const height = parseInt(dragButton.style.gridRow);
+
+                // Hide only the spanned grid cells
+                const gridCells = document.querySelectorAll(".grid-cell");
+                gridCells.forEach((cell) => {
+                    const col = parseInt(cell.style.gridColumn);
+                    const row = parseInt(cell.style.gridRow);
+
+                    if ((col <= width && row === 1) || (row <= height && col === 1)) {
+                        cell.style.display = "none";
+                    }
+                });
+            } else {
+                isDragging = true;
+                dragButton.style.zIndex = "2"; /* Lower the z-index when dragging */
+            }
+        });
+
+        dragButton.addEventListener("mouseup", () => {
+            isDragging = false;
+            isResizing = false;
+            dragButton.style.zIndex = "2"; /* Set back to a common z-index value */
+
+            // Restore the display of all grid cells when not resizing
+            const gridCells = document.querySelectorAll(".grid-cell");
+            gridCells.forEach((cell) => {
+                cell.style.display = "block";
+            });
+        });
+
+        dragButton.addEventListener("click", (e) => {
+            if (e.target === dragButton) {
+                isDragging = true;
+                dragButton.style.zIndex = "2"; /* Lower the z-index when dragging */
+            }
+        });
+
+        gridContainer.addEventListener("mousemove", (e) => {
+            if (isDragging) {
+                const column = Math.min(10, Math.max(1, Math.floor(e.clientX / (gridContainer.offsetWidth / 10)) + 1));
+                const row = Math.min(10, Math.max(1, Math.floor(e.clientY / (gridContainer.offsetHeight / 10)) + 1));
+                dragButton.style.gridColumn = column;
+                dragButton.style.gridRow = row;
+            }
+
+            if (isResizing) {
+                const width = Math.min(10, Math.max(1, Math.floor(e.clientX / (gridContainer.offsetWidth / 10)) + 1));
+                const height = Math.min(10, Math.max(1, Math.floor(e.clientY / (gridContainer.offsetHeight / 10)) + 1));
+                dragButton.style.gridColumn = `auto / span ${width}`;
+                dragButton.style.gridRow = `auto / span ${height}`;
+            }
+        });
+    </script>
+</body>
+</html>
