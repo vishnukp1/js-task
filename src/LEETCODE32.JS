@@ -42,9 +42,9 @@ var firstLetterTwice = function(s) {
         letterIndices[letter] = i;
     }
 
-    return null; // You shouldn't reach this point as the input guarantees at least one letter appears twice
+    return null; 
 };
 
-// Example usage:
+
 console.log(firstLetterTwice("abccbaacz")); // Output: "c"
 console.log(firstLetterTwice("abcdd"));     // Output: "d"
