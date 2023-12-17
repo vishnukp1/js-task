@@ -1,4 +1,3 @@
-
 // i have a text(no space) in the text i need to check another text include how to do with js
 
 const mainText = "ThisIsATestText";
