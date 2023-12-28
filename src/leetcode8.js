@@ -11,6 +11,7 @@
 // Example 2:
 
 // Input: s = "10"
+
 // Output: 0
 // Explanation: s is already alternating.
 // Example 3:
